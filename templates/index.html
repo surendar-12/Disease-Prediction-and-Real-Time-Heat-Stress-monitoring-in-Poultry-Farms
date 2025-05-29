@@ -1,0 +1,336 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hen Disease Classification</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: white;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            padding: 40px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-custom {
+            background-color: #ff477e;
+            color: white;
+            border-radius: 20px;
+            padding: 10px 20px;
+            transition: 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #ff2d6a;
+        }
+
+        .result-box {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin-top: 15px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            background-color: white;
+            color: #ff477e;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #ff2d6a;
+            color: white;
+        }
+
+        #diseaseInfo {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 class="mb-4">🐔 Hen Disease Classification System 🏥</h2>
+
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="fileInput" class="custom-file-upload">📁 Choose Image</label>
+            <input type="file" id="fileInput" name="file" accept="image/*" required>
+            <button type="submit" class="btn btn-custom mt-3">Classify Image</button>
+        </form>
+
+        <div class="result-box mt-4" id="cnnResult">📊 CNN Result: -</div>
+        <div class="result-box" id="extractedValue">🌡️ Extracted Value: -</div>
+        <div class="result-box" id="knnResult">🔍 KNN Result: -</div>
+
+        <div class="result-box mt-4" id="diseaseInfo">
+            <h4>🦠 Symptoms & Remedy</h4>
+            <p><b>Symptoms:</b> <span id="symptoms"></span></p>
+            <p><b>Remedy:</b> <span id="remedy"></span></p>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $("#uploadForm").submit(function(event) {
+                event.preventDefault();
+                
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "/classify",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $("#cnnResult").html("📊 CNN Result: <b>" + response.cnn_result + "</b>");
+                        $("#extractedValue").html("🌡️ Extracted Value: <b>" + response.extracted_value + "</b>");
+                        $("#knnResult").html("🔍 KNN Result: <b>" + response.knn_result + "</b>");
+
+                        // Show symptoms & remedies
+                        if (response.symptoms && response.remedy) {
+                            $("#symptoms").html(response.symptoms.join(", "));
+                            $("#remedy").html(response.remedy);
+                            $("#diseaseInfo").fadeIn();
+                        } else {
+                            $("#diseaseInfo").hide();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("❌ Error: " + error);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hen Disease Classification</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .btn-custom {
+            background-color: #ff477e;
+            color: white;
+            border-radius: 25px;
+            padding: 10px 25px;
+            transition: 0.3s;
+            font-size: 1rem;
+            border: none;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .btn-custom:hover {
+            background-color: #ff2d6a;
+            transform: translateY(-2px);
+        }
+
+        .result-box {
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 15px;
+            background: #3a3a3a;
+            border-radius: 8px;
+            margin-top: 15px;
+            animation: fadeIn 1s ease-in-out;
+            text-align: left;
+            color: #e0e0e0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            background-color: #3a3a3a;
+            color: #e0e0e0;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1rem;
+            display: inline-block;
+            margin-bottom: 15px;
+            border: 2px dashed #ff477e;
+            text-align: center;
+            width: 100%;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #ff477e;
+            color: white;
+            border-color: #ff477e;
+        }
+
+        #diseaseInfo {
+            display: none;
+            background: #3a3a3a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        #diseaseInfo h4 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        #diseaseInfo p {
+            margin: 10px 0;
+            font-size: 1rem;
+            color: #e0e0e0;
+        }
+
+        .icon {
+            margin-right: 10px;
+            color: #ff477e;
+        }
+
+        .upload-label {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🐔 Hen Disease Classification System 🏥</h2>
+
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="fileInput" class="custom-file-upload">
+                <i class="fas fa-upload icon"></i>📁 Choose Image
+            </label>
+            <input type="file" id="fileInput" name="file" accept="image/*" required>
+            <button type="submit" class="btn btn-custom">
+                <i class="fas fa-search icon"></i>Classify Image
+            </button>
+        </form>
+
+        <div class="result-box mt-4" id="cnnResult">
+            <i class="fas fa-chart-line icon"></i>📊 Predicted Result: -
+        </div>
+        <div class="result-box" id="extractedValue">
+            <i class="fas fa-thermometer-half icon"></i>🌡️ Current Temperature in the Farm: -
+        </div>
+        <div class="result-box" id="knnResult">
+            <i class="fas fa-temperature-high icon"></i>🌡️ Temperature State: -
+        </div>
+
+        <div class="result-box mt-4" id="diseaseInfo">
+            <h4><i class="fas fa-virus icon"></i>🦠 Symptoms & Remedy</h4>
+            <p><b>Symptoms:</b> <span id="symptoms"></span></p>
+            <p><b>Remedy:</b> <span id="remedy"></span></p>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $("#uploadForm").submit(function(event) {
+                event.preventDefault();
+                
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "/classify",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $("#cnnResult").html("<i class='fas fa-chart-line icon'></i>📊 Predicted Result: <b>" + response.cnn_result + "</b>");
+                        $("#extractedValue").html("<i class='fas fa-thermometer-half icon'></i>🌡️ Current Temperature in the Farm: <b>" + response.extracted_value + "</b>");
+                        $("#knnResult").html("<i class='fas fa-temperature-high icon'></i>🌡️ Temperature State: <b>" + response.knn_result + "</b>");
+
+                        // Show symptoms & remedies
+                        if (response.symptoms && response.remedy) {
+                            $("#symptoms").html(response.symptoms.join(", "));
+                            $("#remedy").html(response.remedy);
+                            $("#diseaseInfo").fadeIn();
+                        } else {
+                            $("#diseaseInfo").hide();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("❌ Error: " + error);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
